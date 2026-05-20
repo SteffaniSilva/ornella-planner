@@ -1,5 +1,7 @@
 # 🌸 Ornella Planner
 
+🔗 **Live Website:** https://ornella-planner-98cp.vercel.app/
+
 An aesthetic web-based daily planner and To-do List application built using Flask, SQLite, HTML, CSS, and Bootstrap.
 
 This project allows users to add, edit, complete, and manage daily tasks inside a soft feminine productivity interface inspired by luxury planners and calm aesthetic designs.
