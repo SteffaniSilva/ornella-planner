@@ -1,0 +1,582 @@
+/* =========================
+   GOOGLE FONTS
+========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+
+/* =========================
+   GLOBAL
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background:#f7efed;
+    color:#3f2d2a;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.custom-navbar{
+    background:white;
+    padding:16px 0;
+}
+
+.navbar-flex{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo-text{
+    font-family:'Cormorant Garamond',serif;
+    font-size:42px;
+    font-weight:700;
+    color:#000;
+    text-decoration:none;
+}
+
+.nav-links{
+    display:flex;
+    gap:38px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#3d2e2a;
+    font-weight:500;
+    font-size:18px;
+    font-family:'Cormorant Garamond',serif;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:#b88a4a;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero-section{
+    padding:35px 0 70px;
+    background:linear-gradient(
+        to right,
+        #f7efed,
+        #f6e8eb
+    );
+}
+
+.hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    align-items:center;
+    gap:50px;
+}
+
+.top-text{
+    letter-spacing:4px;
+    font-size:14px;
+    color:#8d716d;
+    margin-bottom:20px;
+    text-transform:uppercase;
+}
+
+.hero-left h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:68px;
+    line-height:1;
+    font-weight:700;
+    margin-bottom:22px;
+    color:#3c2b28;
+}
+
+.hero-description{
+    font-size:21px;
+    color:#7a6560;
+    margin-bottom:28px;
+}
+
+.hero-feature{
+    margin-bottom:32px;
+}
+
+.hero-feature h5{
+    font-size:22px;
+    margin-bottom:10px;
+    color:#3c2b28;
+    font-weight:600;
+}
+
+.hero-feature p{
+    color:#7d6965;
+    font-size:16px;
+    line-height:1.7;
+    width:80%;
+}
+
+/* =========================
+   HERO IMAGE
+========================= */
+
+.hero-image-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.hero-image{
+    width:100%;
+    max-width:390px;
+    height:520px;
+    object-fit:cover;
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   MAIN BUTTON
+========================= */
+
+.main-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px 36px;
+    background:#b88a4a;
+    color:white;
+    text-decoration:none;
+    border-radius:50px;
+    font-weight:600;
+    border:none;
+    transition:0.3s;
+    font-size:16px;
+    min-width:200px;
+}
+
+.main-btn:hover{
+    background:#9f7439;
+    transform:translateY(-2px);
+    color:white;
+}
+
+/* =========================
+   BACK BUTTON FINAL
+========================= */
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px 36px;
+    border-radius:50px;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:600;
+    transition:0.3s;
+
+    background:#f3e6d2;
+    color:#9f7439;
+    border:2px solid #c9a26a;
+
+    min-width:200px;
+}
+
+.back-btn:hover{
+    background:#c9a26a;
+    color:white;
+    transform:translateY(-2px);
+}
+
+/* =========================
+   TASK SECTION
+========================= */
+
+.task-section{
+    padding:60px 0;
+}
+
+.task-card{
+    background:white;
+    padding:35px;
+    border-radius:28px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.custom-table{
+    margin:0;
+}
+
+.custom-table thead{
+    background:#f3dfdf;
+}
+
+.custom-table th{
+    padding:18px;
+    color:#5a4541;
+    font-size:15px;
+    font-weight:600;
+}
+
+.custom-table td{
+    padding:20px;
+    vertical-align:middle;
+    color:#4a3936;
+}
+
+/* =========================
+   PRIORITY
+========================= */
+
+.priority{
+    padding:8px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.high{
+    background:#f7caca;
+    color:#9b3030;
+}
+
+.medium{
+    background:#f6e4bf;
+    color:#8d6500;
+}
+
+.low{
+    background:#eadff8;
+    color:#7040aa;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status{
+    padding:8px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.completed{
+    background:#d7f5df;
+    color:#1f7a3e;
+}
+
+.pending{
+    background:#fff1d0;
+    color:#9b7200;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.btn-group-custom{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.small-btn{
+    padding:10px 16px;
+    border-radius:12px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+}
+
+.complete-btn{
+    background:#d9f7df;
+    color:#267947;
+}
+
+.edit-btn{
+    background:#eadff8;
+    color:#7040aa;
+}
+
+.delete-btn{
+    background:#ffd8de;
+    color:#b53352;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer-section{
+    padding:35px 20px;
+    text-align:center;
+    background:white;
+}
+
+.footer-section p{
+    color:#8d716d;
+    font-size:15px;
+    letter-spacing:1px;
+}
+
+/* =========================
+   FORM PAGE
+========================= */
+
+.form-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 18px;
+    background:linear-gradient(
+        to right,
+        #f7efed,
+        #f9e9ee
+    );
+}
+
+.form-card{
+    width:100%;
+    max-width:560px;
+    background:white;
+    padding:38px;
+    border-radius:28px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.06);
+}
+
+.form-card h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:48px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.form-subtitle{
+    color:#7a6560;
+    margin-bottom:28px;
+}
+
+.form-card label{
+    font-weight:600;
+    margin-bottom:8px;
+    color:#5a4541;
+}
+
+.custom-input{
+    border:1px solid #ead8d5;
+    border-radius:14px;
+    padding:14px 16px;
+}
+
+.custom-input:focus{
+    box-shadow:none;
+    border-color:#c88f93;
+}
+
+/* =========================
+   MOBILE TASK CARD
+========================= */
+
+.mobile-task-table{
+    display:none;
+}
+
+@media (max-width:768px){
+
+    .custom-navbar{
+        padding:14px 0;
+    }
+
+    .navbar-flex{
+        gap:14px;
+        align-items:center;
+    }
+
+    .logo-text{
+        font-size:30px;
+    }
+
+    .nav-links{
+        gap:18px;
+    }
+
+    .nav-links a{
+        font-size:16px;
+    }
+
+    .hero-section{
+        padding:28px 0 36px;
+        text-align:center;
+    }
+
+    .hero-grid{
+        grid-template-columns:1fr;
+        gap:34px;
+    }
+
+    .hero-left h1{
+        font-size:42px;
+        line-height:0.95;
+    }
+
+    .hero-description{
+        font-size:18px;
+    }
+
+    .hero-image{
+        max-width:100%;
+        height:auto;
+        max-height:380px;
+    }
+
+    .task-section{
+        padding:34px 0;
+        background:#f7efed;
+    }
+
+    .task-card{
+        background:#fff;
+        padding:20px;
+        border-radius:32px;
+        box-shadow:0 18px 55px rgba(63,45,42,0.08);
+    }
+
+    .desktop-table-wrap{
+        display:none;
+    }
+
+    .mobile-task-table{
+        display:block;
+        width:100%;
+    }
+
+    .mobile-task-card{
+        background:#fff;
+        border:1px solid #eee6e4;
+        border-radius:22px;
+        padding:24px 22px;
+        margin-bottom:18px;
+    }
+
+    .mobile-task-row{
+        display:grid;
+        grid-template-columns:118px 1fr;
+        align-items:center;
+        column-gap:20px;
+        min-height:58px;
+        padding:6px 0;
+    }
+
+    .mobile-label{
+        font-size:18px;
+        font-weight:700;
+        color:#5a4541;
+    }
+
+    .mobile-value{
+        font-size:17px;
+        color:#3f2d2a;
+    }
+
+    .mobile-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        align-items:center;
+    }
+
+    .priority,
+    .status{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        min-width:100%;
+        padding:12px 20px;
+        border-radius:24px;
+        font-size:15px;
+        font-weight:700;
+    }
+
+    .small-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:12px 18px;
+        border-radius:14px;
+        font-size:15px;
+        font-weight:700;
+    }
+
+    .form-card{
+        padding:28px 20px;
+    }
+
+    .form-card h1{
+        font-size:38px;
+    }
+
+    .main-btn,
+    .back-btn{
+        width:100%;
+        margin-top:16px;
+    }
+}
+
+/* =========================
+   EXTRA SMALL DEVICES
+========================= */
+
+@media (max-width:420px){
+
+    .task-card{
+        padding:18px 20px;
+        border-radius:30px;
+    }
+
+    .mobile-task-card{
+        padding:24px 22px;
+    }
+
+    .mobile-task-row{
+        grid-template-columns:116px 1fr;
+        column-gap:18px;
+    }
+}
+
+@media (max-width:360px){
+
+    .mobile-task-row{
+        grid-template-columns:96px 1fr;
+        column-gap:14px;
+    }
+
+    .mobile-label{
+        font-size:16px;
+    }
+
+    .mobile-value{
+        font-size:16px;
+    }
+
+    .priority,
+    .status{
+        font-size:14px;
+    }
+
+    .small-btn{
+        font-size:14px;
+    }
+}

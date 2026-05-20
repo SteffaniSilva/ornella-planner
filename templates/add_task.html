@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Task</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<section class="form-page">
+
+    <div class="form-card">
+
+        <h1>Add New Task</h1>
+
+        <p class="form-subtitle">
+            Organize your goals beautifully.
+        </p>
+
+        <form method="POST">
+
+            <div class="mb-4">
+
+                <label>Task Title</label>
+
+                <input
+                    type="text"
+                    name="title"
+                    class="form-control custom-input"
+                    required
+                >
+
+            </div>
+
+            <div class="mb-4">
+
+                <label>Due Date</label>
+
+                <input
+                    type="date"
+                    name="due_date"
+                    class="form-control custom-input"
+                >
+
+            </div>
+
+            <div class="mb-4">
+
+                <label>Due Time</label>
+
+                <input
+                    type="time"
+                    name="due_time"
+                    class="form-control custom-input"
+                >
+
+            </div>
+
+            <div class="mb-4">
+
+                <label>Priority</label>
+
+                <select
+                    name="priority"
+                    class="form-select custom-input"
+                >
+
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+
+                </select>
+
+            </div>
+
+            <button type="submit" class="main-btn">
+                Save Task
+            </button>
+
+            <a href="/" class="back-btn">
+                Back Home
+            </a>
+
+        </form>
+
+    </div>
+
+</section>
+
+</body>
+</html>
