@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ornella Planner</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-expand-lg custom-navbar">
+
+    <div class="container navbar-flex">
+
+        <a class="navbar-brand logo-text" href="/">
+            Ornella Planner
+        </a>
+
+        <div class="nav-links">
+
+            <a href="/">Home</a>
+            <a href="/add">Add Task</a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- HERO SECTION -->
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="hero-grid">
+
+            <div class="hero-left">
+
+                <p class="top-text">A softer way to stay on track.</p>
+
+                <h1>Your Daily Planner, <br>Beautifully Designed.</h1>
+
+                <p class="hero-description">Turn your goals into gentle routines.</p>
+
+                <div class="hero-feature">
+                    <h5>Focus on What Matters</h5>
+                    <p>Prioritize your goals without the overwhelm.</p>
+                </div>
+
+                <a href="/add" class="main-btn">Start Planning</a>
+
+            </div>
+
+            <div class="hero-image-container">
+                <img
+                    src="{{ url_for('static', filename='images/planner.jpg') }}"
+                    alt="Planner"
+                    class="hero-image"
+                >
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- TASK SECTION -->
+
+<section class="task-section">
+
+    <div class="container">
+
+        <div class="task-card">
+
+            {% if tasks %}
+
+            <!-- Desktop / tablet table -->
+            <div class="desktop-table-wrap">
+                <table class="table custom-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Task</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td>#{{ task['id'] }}</td>
+                            <td>{{ task['title'] }}</td>
+
+                            <td>
+                                {% if task['priority'] == 'High' %}
+                                    <span class="priority high">High</span>
+                                {% elif task['priority'] == 'Medium' %}
+                                    <span class="priority medium">Medium</span>
+                                {% else %}
+                                    <span class="priority low">Low</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if task['status'] == 'Completed' %}
+                                    <span class="status completed">Completed</span>
+                                {% else %}
+                                    <span class="status pending">Pending</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="btn-group-custom">
+                                    {% if task['status'] != 'Completed' %}
+                                    <a href="/complete/{{ task['id'] }}" class="small-btn complete-btn">Complete</a>
+                                    {% endif %}
+                                    <a href="/edit/{{ task['id'] }}" class="small-btn edit-btn">Edit</a>
+                                    <a href="/delete/{{ task['id'] }}" class="small-btn delete-btn" onclick="return confirm('Delete this task?')">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            <!-- Mobile cards: one task per card, labels on the left and values/actions on the right -->
+            <div class="mobile-task-table" aria-label="Mobile task list">
+
+                {% for task in tasks %}
+                <article class="mobile-task-card">
+
+                    <div class="mobile-task-row">
+                        <div class="mobile-label">ID</div>
+                        <div class="mobile-value">#{{ task['id'] }}</div>
+                    </div>
+
+                    <div class="mobile-task-row">
+                        <div class="mobile-label">Task</div>
+                        <div class="mobile-value mobile-task-title">{{ task['title'] }}</div>
+                    </div>
+
+                    <div class="mobile-task-row">
+                        <div class="mobile-label">Priority</div>
+                        <div class="mobile-value">
+                            {% if task['priority'] == 'High' %}
+                                <span class="priority high">High</span>
+                            {% elif task['priority'] == 'Medium' %}
+                                <span class="priority medium">Medium</span>
+                            {% else %}
+                                <span class="priority low">Low</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mobile-task-row">
+                        <div class="mobile-label">Status</div>
+                        <div class="mobile-value">
+                            {% if task['status'] == 'Completed' %}
+                                <span class="status completed">Completed</span>
+                            {% else %}
+                                <span class="status pending">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mobile-task-row mobile-actions-row">
+                        <div class="mobile-label">Actions</div>
+                        <div class="mobile-value mobile-actions">
+                            {% if task['status'] != 'Completed' %}
+                            <a href="/complete/{{ task['id'] }}" class="small-btn complete-btn">Complete</a>
+                            {% endif %}
+                            <a href="/edit/{{ task['id'] }}" class="small-btn edit-btn">Edit</a>
+                            <a href="/delete/{{ task['id'] }}" class="small-btn delete-btn" onclick="return confirm('Delete this task?')">Delete</a>
+                        </div>
+                    </div>
+
+                </article>
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+                <h3>No tasks yet</h3>
+                <p>Add your first task and start planning calmly.</p>
+                <a href="/add" class="main-btn">Add Task</a>
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer class="footer-section">
+    <p>Designed for calm minds and clear goals.</p>
+</footer>
+
+</body>
+</html>
