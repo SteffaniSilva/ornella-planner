@@ -1,0 +1,112 @@
+// Ornella Planner browser reminders
+// Note: browser notifications work only when the site is open in the browser.
+
+(function () {
+    "use strict";
+
+    function canUseNotifications() {
+        return "Notification" in window;
+    }
+
+    function askNotificationPermission() {
+        if (!canUseNotifications()) {
+            return Promise.resolve("unsupported");
+        }
+
+        if (Notification.permission === "granted") {
+            return Promise.resolve("granted");
+        }
+
+        if (Notification.permission === "denied") {
+            return Promise.resolve("denied");
+        }
+
+        return Notification.requestPermission();
+    }
+
+    function showReminder(task) {
+        const message = `Reminder: ${task.title}`;
+
+        if (canUseNotifications() && Notification.permission === "granted") {
+            new Notification("Ornella Planner", {
+                body: message,
+                icon: "/static/images/planner.jpg"
+            });
+        } else {
+            alert(message);
+        }
+    }
+
+    function readReminderTasks() {
+        const dataTag = document.getElementById("task-reminder-data");
+        if (!dataTag) {
+            return [];
+        }
+
+        try {
+            return JSON.parse(dataTag.textContent || "[]");
+        } catch (error) {
+            console.error("Could not read reminder tasks", error);
+            return [];
+        }
+    }
+
+    function scheduleReminders() {
+        const tasks = readReminderTasks();
+        if (!tasks.length) {
+            return;
+        }
+
+        tasks.forEach(function (task) {
+            if (!task.due_date || !task.due_time || task.status === "Completed") {
+                return;
+            }
+
+            const dueAt = new Date(`${task.due_date}T${task.due_time}`);
+            const delay = dueAt.getTime() - Date.now();
+            const reminderKey = `ornella-reminder-shown-${task.id}-${task.due_date}-${task.due_time}`;
+
+            if (Number.isNaN(dueAt.getTime()) || delay <= 0 || localStorage.getItem(reminderKey)) {
+                return;
+            }
+
+            setTimeout(function () {
+                localStorage.setItem(reminderKey, "yes");
+                showReminder(task);
+            }, delay);
+        });
+    }
+
+    function attachPermissionHandlers() {
+        document.querySelectorAll(".js-enable-reminders").forEach(function (button) {
+            button.addEventListener("click", function () {
+                askNotificationPermission();
+            });
+        });
+
+        document.querySelectorAll(".js-reminder-form").forEach(function (form) {
+            form.addEventListener("submit", function (event) {
+                const dueDate = form.querySelector('input[name="due_date"]');
+                const dueTime = form.querySelector('input[name="due_time"]');
+
+                if (!dueDate || !dueTime || !dueDate.value || !dueTime.value) {
+                    return;
+                }
+
+                if (!canUseNotifications() || Notification.permission !== "default") {
+                    return;
+                }
+
+                event.preventDefault();
+                askNotificationPermission().finally(function () {
+                    form.submit();
+                });
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        attachPermissionHandlers();
+        scheduleReminders();
+    });
+})();
