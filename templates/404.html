@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<section class="form-page">
+    <div class="form-card text-center">
+        <h1>Page Not Found</h1>
+        <p class="form-subtitle">The task or page you are looking for does not exist.</p>
+        <a href="{{ url_for('index') }}" class="main-btn">Back Home</a>
+    </div>
+</section>
+</body>
+</html>

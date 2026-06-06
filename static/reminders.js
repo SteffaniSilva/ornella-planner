@@ -1,8 +1,10 @@
 // Ornella Planner browser reminders
-// Note: browser notifications work only when the site is open in the browser.
+// Reminders work while the website is open in the browser.
 
 (function () {
     "use strict";
+
+    const MAX_TIMEOUT = 2147483647; // maximum safe delay for setTimeout
 
     function canUseNotifications() {
         return "Notification" in window;
@@ -24,6 +26,22 @@
         return Notification.requestPermission();
     }
 
+    function safeGetItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (error) {
+            // Ignore storage errors in private/incognito modes.
+        }
+    }
+
     function showReminder(task) {
         const message = `Reminder: ${task.title}`;
 
@@ -39,6 +57,7 @@
 
     function readReminderTasks() {
         const dataTag = document.getElementById("task-reminder-data");
+
         if (!dataTag) {
             return [];
         }
@@ -51,11 +70,19 @@
         }
     }
 
-    function scheduleReminders() {
-        const tasks = readReminderTasks();
-        if (!tasks.length) {
+    function scheduleLongTimeout(callback, delay) {
+        if (delay <= MAX_TIMEOUT) {
+            window.setTimeout(callback, delay);
             return;
         }
+
+        window.setTimeout(function () {
+            scheduleLongTimeout(callback, delay - MAX_TIMEOUT);
+        }, MAX_TIMEOUT);
+    }
+
+    function scheduleReminders() {
+        const tasks = readReminderTasks();
 
         tasks.forEach(function (task) {
             if (!task.due_date || !task.due_time || task.status === "Completed") {
@@ -66,21 +93,31 @@
             const delay = dueAt.getTime() - Date.now();
             const reminderKey = `ornella-reminder-shown-${task.id}-${task.due_date}-${task.due_time}`;
 
-            if (Number.isNaN(dueAt.getTime()) || delay <= 0 || localStorage.getItem(reminderKey)) {
+            if (Number.isNaN(dueAt.getTime()) || delay <= 0 || safeGetItem(reminderKey)) {
                 return;
             }
 
-            setTimeout(function () {
-                localStorage.setItem(reminderKey, "yes");
+            scheduleLongTimeout(function () {
+                safeSetItem(reminderKey, "yes");
                 showReminder(task);
             }, delay);
         });
     }
 
     function attachPermissionHandlers() {
-        document.querySelectorAll(".js-enable-reminders").forEach(function (button) {
-            button.addEventListener("click", function () {
-                askNotificationPermission();
+        document.querySelectorAll(".js-enable-reminders").forEach(function (element) {
+            element.addEventListener("click", function (event) {
+                const targetUrl = element.getAttribute("href");
+
+                if (targetUrl) {
+                    event.preventDefault();
+                }
+
+                askNotificationPermission().finally(function () {
+                    if (targetUrl) {
+                        window.location.href = targetUrl;
+                    }
+                });
             });
         });
 

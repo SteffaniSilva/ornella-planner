@@ -1,62 +1,58 @@
-# 🌸 Ornella Planner
+# Ornella Planner
 
-🔗 **Live Website:** https://ornella-planner-98cp.vercel.app/
+A soft, aesthetic daily planner web application built with Flask, SQLite, HTML, CSS, Bootstrap, and JavaScript.
 
-An aesthetic web-based daily planner and To-do List application built using Flask, SQLite, HTML, CSS, and Bootstrap.
-
-This project allows users to add, edit, complete, and manage daily tasks inside a soft feminine productivity interface inspired by luxury planners and calm aesthetic designs.
-
----
-
-# ✨ Features
+## Fixed Features
 
 - Add new tasks
-- Edit existing tasks
+- Edit tasks
 - Delete tasks
 - Mark tasks as completed
-- View pending and completed tasks
-- Set priority levels: Low, Medium, High
-- Add due dates
-- Add due times
-- Store tasks using SQLite database
-- Beautiful aesthetic planner-inspired UI
-- Responsive web design
-- Elegant typography and soft color palette
-- Flask backend integration
-- Clean project structure
+- Undo completed tasks
+- View due dates and due times on the home page
+- Search tasks by title
+- Filter tasks by All, Pending, or Completed
+- Show task statistics
+- Highlight overdue pending tasks
+- Browser reminders for tasks that have both due date and due time
+- Responsive desktop and mobile layouts
+- Cleaner Flask routes using `url_for`
+- Safer database handling to reduce SQLite locking issues
+- Reduced `requirements.txt` to only the packages the app needs
 
----
+## How to run locally
 
-# 🛠️ Technologies Used
+```bash
+pip install -r requirements.txt
+python app.py
+```
 
-- Python
-- Flask
-- SQLite
-- HTML5
-- CSS3
-- Bootstrap 5
-- Jinja2
-- Git
-- GitHub
+Then open:
 
----
+```text
+http://127.0.0.1:5000
+```
 
-# 📂 Project Structure
+## Project structure
 
-```plaintext
-ornella-planner/
-│
+```text
+ornella-planner-main/
+├── app.py
+├── database.py
+├── requirements.txt
+├── vercel.json
 ├── static/
 │   ├── style.css
+│   ├── reminders.js
 │   └── images/
 │       └── planner.jpg
-│
-├── templates/
-│   ├── index.html
-│   ├── add_task.html
-│   └── edit_task.html
-│
-├── app.py
-├── tasks.db
-├── README.md
-└── .gitignore
+└── templates/
+    ├── index.html
+    ├── add_task.html
+    ├── edit_task.html
+    └── 404.html
+```
+
+## Note about reminders
+
+Browser reminders work only while the website is open in the browser. The user must allow notification permission.

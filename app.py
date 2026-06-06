@@ -1,51 +1,46 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
-import sqlite3
-import os
+from datetime import datetime, time
+
+from flask import Flask, abort, redirect, render_template, request, url_for
+
+import database
 
 app = Flask(__name__)
 
-# Vercel/serverless can write only to /tmp. This also removes old uploaded task history.
-if os.environ.get("VERCEL"):
-    DATABASE = "/tmp/tasks.db"
-else:
-    DATABASE = os.path.join(os.path.dirname(__file__), "tasks.db")
+database.init_db()
 
 
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE, timeout=10, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    return conn
+def is_task_overdue(task):
+    if task["status"] == "Completed" or not task["due_date"]:
+        return False
+
+    try:
+        if task["due_time"]:
+            due_at = datetime.strptime(
+                f"{task['due_date']} {task['due_time']}", "%Y-%m-%d %H:%M"
+            )
+        else:
+            due_day = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+            due_at = datetime.combine(due_day, time.max)
+    except ValueError:
+        return False
+
+    return due_at < datetime.now()
 
 
-def create_table():
-    conn = get_db_connection()
-    conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            due_date TEXT,
-            due_time TEXT,
-            priority TEXT NOT NULL DEFAULT 'Low',
-            status TEXT NOT NULL DEFAULT 'Pending'
-        )
-        """
-    )
-    conn.commit()
-    conn.close()
-
-
-create_table()
+def prepare_task(task):
+    task_dict = dict(task)
+    task_dict["is_overdue"] = is_task_overdue(task)
+    return task_dict
 
 
 @app.route("/")
 def index():
-    conn = get_db_connection()
-    tasks = conn.execute("SELECT * FROM tasks ORDER BY id DESC").fetchall()
-    conn.close()
+    search = request.args.get("q", "").strip()
+    status = request.args.get("status", "All").strip()
 
-    # Browser reminders use this safe JSON list.
-    # They work while the website is open in the browser.
+    tasks = [prepare_task(task) for task in database.get_all_tasks(search, status)]
+    stats = database.get_statistics()
+
     reminder_tasks = [
         {
             "id": task["id"],
@@ -58,90 +53,85 @@ def index():
         if task["due_date"] and task["due_time"] and task["status"] != "Completed"
     ]
 
-    return render_template("index.html", tasks=tasks, reminder_tasks=reminder_tasks)
+    return render_template(
+        "index.html",
+        tasks=tasks,
+        stats=stats,
+        reminder_tasks=reminder_tasks,
+        search=search,
+        selected_status=status if status in {"All", "Pending", "Completed"} else "All",
+    )
 
 
 @app.route("/add", methods=["GET", "POST"])
 def add_task():
     if request.method == "POST":
-        title = request.form.get("title", "").strip()
-        due_date = request.form.get("due_date", "").strip()
-        due_time = request.form.get("due_time", "").strip()
-        priority = request.form.get("priority", "Low").strip()
+        title = request.form.get("title", "")
+        due_date = request.form.get("due_date", "")
+        due_time = request.form.get("due_time", "")
+        priority = request.form.get("priority", "Low")
 
-        if not title:
-            return redirect(url_for("add_task"))
-
-        conn = get_db_connection()
-        conn.execute(
-            """
-            INSERT INTO tasks (title, due_date, due_time, priority, status)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (title, due_date, due_time, priority, "Pending"),
-        )
-        conn.commit()
-        conn.close()
+        try:
+            database.add_task(title, due_date, due_time, priority)
+        except ValueError as error:
+            return render_template(
+                "add_task.html",
+                error=str(error),
+                form=request.form,
+            )
 
         return redirect(url_for("index"))
 
-    return render_template("add_task.html")
+    return render_template("add_task.html", form={})
 
 
-@app.route("/complete/<int:id>")
-def complete_task(id):
-    conn = get_db_connection()
-    conn.execute("UPDATE tasks SET status = ? WHERE id = ?", ("Completed", id))
-    conn.commit()
-    conn.close()
-    return redirect(url_for("index"))
-
-
-@app.route("/delete/<int:id>")
-def delete_task(id):
-    conn = get_db_connection()
-    conn.execute("DELETE FROM tasks WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for("index"))
-
-
-@app.route("/edit/<int:id>", methods=["GET", "POST"])
-def edit_task(id):
-    conn = get_db_connection()
-    task = conn.execute("SELECT * FROM tasks WHERE id = ?", (id,)).fetchone()
+@app.route("/edit/<int:task_id>", methods=["GET", "POST"])
+def edit_task(task_id):
+    task = database.get_task(task_id)
 
     if task is None:
-        conn.close()
         abort(404)
 
     if request.method == "POST":
-        title = request.form.get("title", "").strip()
-        due_date = request.form.get("due_date", "").strip()
-        due_time = request.form.get("due_time", "").strip()
-        priority = request.form.get("priority", "Low").strip()
+        title = request.form.get("title", "")
+        due_date = request.form.get("due_date", "")
+        due_time = request.form.get("due_time", "")
+        priority = request.form.get("priority", "Low")
 
-        if not title:
-            conn.close()
-            return redirect(url_for("edit_task", id=id))
-
-        conn.execute(
-            """
-            UPDATE tasks
-            SET title = ?, due_date = ?, due_time = ?, priority = ?
-            WHERE id = ?
-            """,
-            (title, due_date, due_time, priority, id),
-        )
-        conn.commit()
-        conn.close()
+        try:
+            database.update_task(task_id, title, due_date, due_time, priority)
+        except ValueError as error:
+            task_data = dict(task)
+            task_data.update(request.form)
+            return render_template("edit_task.html", task=task_data, error=str(error))
 
         return redirect(url_for("index"))
 
-    conn.close()
     return render_template("edit_task.html", task=task)
 
 
+@app.route("/complete/<int:task_id>", methods=["POST", "GET"])
+def complete_task(task_id):
+    database.mark_completed(task_id)
+    return redirect(url_for("index"))
+
+
+@app.route("/pending/<int:task_id>", methods=["POST", "GET"])
+def pending_task(task_id):
+    database.mark_pending(task_id)
+    return redirect(url_for("index"))
+
+
+@app.route("/delete/<int:task_id>", methods=["POST", "GET"])
+def delete_task(task_id):
+    database.delete_task(task_id)
+    return redirect(url_for("index"))
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
+
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(debug=True)
