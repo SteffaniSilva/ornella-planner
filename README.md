@@ -2,6 +2,8 @@
 
 A soft, aesthetic daily planner web application built with Flask, SQLite, HTML, CSS, Bootstrap, and JavaScript.
 
+🔗 **Live Website:** https://ornella-planner-98cp.vercel.app/
+
 ## Fixed Features
 
 - Add new tasks
